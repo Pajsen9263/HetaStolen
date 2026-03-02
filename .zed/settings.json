@@ -1,0 +1,10 @@
+{
+  "file_types": {
+    "JSON": [".prettierrc"]
+  },
+  "languages": {
+      "CSS": {
+        "language_servers": ["tailwindcss"]
+      }
+    }
+}
