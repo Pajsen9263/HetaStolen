@@ -19,13 +19,22 @@ export const load: PageServerLoad = async ({ locals: { isAdmin } }) => {
 type FormData = v.InferInput<typeof createSessionSchema>;
 
 export const actions = {
-	default: async ({ request, locals: { isAdmin } }) => {
+	create: async ({ request }) => {
 		const formData = Object.fromEntries(await request.formData()) as FormData;
 
-		// if (!isAdmin) {
-		// 	throw error(403, "Unauthorized");
-		// }
+		const result = v.safeParse(createSessionSchema, formData);
 
-		console.log(formData.name);
+		if (!result.success) {
+			throw error(400, `Invalid form data`);
+		}
+
+		const name = result.output.name;
+
+		// Expected to call some service that creates the service. Or maybe we're lazy and just insert into the database here. But I would like a service Mr caiban.
+		console.log(name);
+	},
+	logout: async ({ locals, cookies }) => {
+		locals.adminAuthService.logout(cookies);
+		throw redirect(303, "/admin/login");
 	}
 } satisfies Actions;

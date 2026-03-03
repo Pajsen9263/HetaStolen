@@ -1,19 +1,29 @@
-function generateSecretPassword(length: number = 12): string {
-	const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	const randomValues = new Uint32Array(length);
+import { redirect, error, type Handle } from "@sveltejs/kit";
+import { AdminAuthService } from "$lib/server/services/adminAuth";
 
-	// Fills the array with cryptographically secure random numbers
-	crypto.getRandomValues(randomValues);
+const adminAuthService = new AdminAuthService();
 
-	let password = "";
-	for (let i = 0; i < length; i++) {
-		// We use the random number to pick an index.
-		// Uint32Array provides a massive range, which effectively eliminates modulo bias.
-		password += characters.charAt(randomValues[i] % characters.length);
+export const handle: Handle = async ({ event, resolve }) => {
+	const userAgent = event.request.headers.get("user-agent");
+	if (!userAgent) {
+		throw error(400, "User-Agent header is required");
 	}
 
-	return password;
-}
+	const ip = event.getClientAddress();
 
-// This may not be the place where we want to instantiate this. Maybe like a admin auth service instead. Also instatiated in here.
-const secretPassword = generateSecretPassword();
+	// Service Injection
+	event.locals.adminAuthService = adminAuthService;
+
+	// Check authentication status
+	event.locals.isAdmin = adminAuthService.isAuthenticated(ip, userAgent, event.cookies);
+	event.locals.requestInfo = { ip, userAgent };
+
+	// Protect /admin routes (except /admin/login)
+	if (event.url.pathname.startsWith("/admin") && event.url.pathname !== "/admin/login") {
+		if (!event.locals.isAdmin) {
+			throw redirect(303, "/admin/login");
+		}
+	}
+
+	return resolve(event);
+};

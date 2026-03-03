@@ -5,7 +5,8 @@
 		name: v.pipe(
 			v.string(),
 			v.minLength(2, "Name must be at least 2 characters long"),
-			v.maxLength(20, "Name can't be longer than 20 characters")
+			v.maxLength(20, "Name can't be longer than 20 characters"),
+			v.trim()
 		)
 	});
 </script>
@@ -21,11 +22,16 @@
 	const { data }: PageProps = $props();
 </script>
 
-<h1 class="text-2xl font-bold">Sessions</h1>
+<div class="flex items-center justify-between">
+	<h1 class="text-2xl font-bold">Sessions</h1>
+	<form method="POST" action="?/logout" use:enhance>
+		<Button type="submit" variant="outline" size="sm">Logout</Button>
+	</form>
+</div>
 
-<form method="POST" class="flex items-center gap-2" use:enhance>
+<form method="POST" action="?/create" class="flex items-center gap-2" use:enhance>
 	<Input type="text" name="name" placeholder="Session Name" required class="flex-1" />
-	<Button type="submit" name="action" value="create">Create Session</Button>
+	<Button type="submit">Create Session</Button>
 </form>
 
 <Separator></Separator>
