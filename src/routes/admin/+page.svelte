@@ -46,6 +46,7 @@
 				<Table.Head>Created At</Table.Head>
 				<Table.Head class="text-center">Count</Table.Head>
 				<Table.Head class="text-center">Edit</Table.Head>
+				<Table.Head class="text-center">QR</Table.Head>
 			</Table.Row>
 		</Table.Header>
 		<Table.Body>
@@ -59,6 +60,16 @@
 					<Table.Cell>
 						<Button variant="outline" size="sm" class="w-full" href={`/admin/${session.id}`}
 							>Edit
+						</Button>
+					</Table.Cell>
+					<Table.Cell>
+						<Button
+							variant="outline"
+							size="sm"
+							class="w-full"
+							href={`/admin/qr/${session.id}`}
+							target="_blank"
+							>View
 						</Button>
 					</Table.Cell>
 				</Table.Row>
