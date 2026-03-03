@@ -13,3 +13,11 @@ export const questionTable = sqliteTable("question", {
 	content: text().notNull(),
 	createdAt: int({ mode: "timestamp_ms" }).notNull()
 });
+
+export const speakersTable = sqliteTable("speaker", {
+	id: text().notNull().unique(),
+	name: text().notNull(),
+	party: text().notNull(),
+	imageURL: text(),
+	sessionId: text().references(() => sessionTable.id)
+});
