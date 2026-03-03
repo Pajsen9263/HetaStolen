@@ -63,12 +63,7 @@
 						</Button>
 					</Table.Cell>
 					<Table.Cell>
-						<Button
-							variant="outline"
-							size="sm"
-							class="w-full"
-							href={`/admin/qr/${session.id}`}
-							target="_blank"
+						<Button variant="outline" size="sm" class="w-full" href={`/admin/qr/${session.id}`}
 							>View
 						</Button>
 					</Table.Cell>
