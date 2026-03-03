@@ -5,6 +5,7 @@
     "": {
       "name": "questions",
       "dependencies": {
+        "@castlenine/svelte-qrcode": "^2.3.0",
         "drizzle-orm": "^0.45.1",
         "mode-watcher": "^1.1.0",
         "valibot": "^1.2.0",
@@ -37,6 +38,8 @@
     },
   },
   "packages": {
+    "@castlenine/svelte-qrcode": ["@castlenine/svelte-qrcode@2.3.0", "", { "peerDependencies": { "svelte": ">=3.54.0" } }, "sha512-1YO6tL63gjbCuBkhd/PyMMFbjFD6gO6TJjvq5Ucfs5+0s13oDfiUyxO15kjR11enG7O/A2R0WBuc4bfdMqjTJQ=="],
+
     "@drizzle-team/brocli": ["@drizzle-team/brocli@0.10.2", "", {}, "sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w=="],
 
     "@esbuild-kit/core-utils": ["@esbuild-kit/core-utils@3.3.2", "", { "dependencies": { "esbuild": "~0.18.20", "source-map-support": "^0.5.21" } }, "sha512-sPRAnw9CdSsRmEtnsl2WXWdyquogVpB3yZ3dgwJfe8zrOzTsV7cJvmwrKVa+0ma5BoiGJ+BoqkMvawbayKUsqQ=="],

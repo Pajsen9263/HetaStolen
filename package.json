@@ -41,6 +41,7 @@
 		"vite-plugin-devtools-json": "^1.0.0"
 	},
 	"dependencies": {
+		"@castlenine/svelte-qrcode": "^2.3.0",
 		"drizzle-orm": "^0.45.1",
 		"mode-watcher": "^1.1.0",
 		"valibot": "^1.2.0"
