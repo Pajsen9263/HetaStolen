@@ -1,0 +1,50 @@
+<script lang="ts">
+	import { Button } from "@/ui/button";
+	import type { PageProps } from "./$types";
+	import * as Table from "@/ui/table";
+	import Separator from "@/ui/separator/separator.svelte";
+	import { Input } from "@/ui/input";
+	import { enhance } from "$app/forms";
+
+	const { data }: PageProps = $props();
+</script>
+
+<h1 class="text-2xl font-bold">Sessions</h1>
+
+<form method="POST" class="mb-4 flex items-center gap-2" use:enhance>
+	<Input type="text" name="name" placeholder="Session Name" required class="flex-1" />
+	<Button type="submit" name="action" value="create">Create Session</Button>
+</form>
+
+<Separator></Separator>
+
+<div class="w-full overflow-hidden rounded border">
+	<Table.Root>
+		<Table.Header>
+			<Table.Row>
+				<Table.Head>#</Table.Head>
+				<Table.Head>Name</Table.Head>
+				<Table.Head>Code</Table.Head>
+				<Table.Head>Created At</Table.Head>
+				<Table.Head class="text-center">Count</Table.Head>
+				<Table.Head class="text-center">Edit</Table.Head>
+			</Table.Row>
+		</Table.Header>
+		<Table.Body>
+			{#each data.sessions as { session, questionCount }, i (session.id)}
+				<Table.Row>
+					<Table.Cell>{i + 1}</Table.Cell>
+					<Table.Cell class="text-lg font-semibold">{session.name}</Table.Cell>
+					<Table.Cell>{session.code}</Table.Cell>
+					<Table.Cell>{session.createdAt.toLocaleString()}</Table.Cell>
+					<Table.Cell class="text-center font-semibold">{questionCount}</Table.Cell>
+					<Table.Cell>
+						<Button variant="outline" size="sm" class="w-full" href={`/admin/${session.id}`}
+							>Edit
+						</Button>
+					</Table.Cell>
+				</Table.Row>
+			{/each}
+		</Table.Body>
+	</Table.Root>
+</div>
