@@ -3,6 +3,8 @@ import { createSessionSchema } from "./+page.svelte";
 import * as v from "valibot";
 import { getAllSessionsWithQuestionCount } from "$lib/server/db/queries";
 import { error, redirect } from "@sveltejs/kit";
+import db from "$lib/server/db";
+import { sessionTable } from "$lib/server/db/schema";
 
 export const load: PageServerLoad = async ({ locals: { isAdmin } }) => {
 	const sessions = await getAllSessionsWithQuestionCount.execute();
@@ -29,6 +31,16 @@ export const actions = {
 		}
 
 		const name = result.output.name;
+		//Test code bellow, stfu alex
+
+		const id = crypto.randomUUID();
+		const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+		await db.insert(sessionTable).values({
+			id,
+			code,
+			name,
+			createdAt: new Date()
+		});
 
 		// Expected to call some service that creates the service. Or maybe we're lazy and just insert into the database here. But I would like a service Mr caiban.
 		console.log(name);
