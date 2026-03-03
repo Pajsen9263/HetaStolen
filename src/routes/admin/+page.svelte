@@ -1,3 +1,15 @@
+<script lang="ts" module>
+	import * as v from "valibot";
+
+	export const createSessionSchema = v.object({
+		name: v.pipe(
+			v.string(),
+			v.minLength(2, "Name must be at least 2 characters long"),
+			v.maxLength(20, "Name can't be longer than 20 characters")
+		)
+	});
+</script>
+
 <script lang="ts">
 	import { Button } from "@/ui/button";
 	import type { PageProps } from "./$types";
@@ -11,7 +23,7 @@
 
 <h1 class="text-2xl font-bold">Sessions</h1>
 
-<form method="POST" class="mb-4 flex items-center gap-2" use:enhance>
+<form method="POST" class="flex items-center gap-2" use:enhance>
 	<Input type="text" name="name" placeholder="Session Name" required class="flex-1" />
 	<Button type="submit" name="action" value="create">Create Session</Button>
 </form>
