@@ -1,15 +1,12 @@
 import type { PageServerLoad } from "./$types";
-import { getSessionWithQuestionCount } from "$lib/server/db/queries";
+import { getSessionById } from "$lib/server/db/queries";
 import { error } from "@sveltejs/kit";
 
 export const load: PageServerLoad = async ({ params }) => {
-	const results = await getSessionWithQuestionCount.execute({ sessionId: params.session });
-
-	if (results.length === 0) {
+	const session = await getSessionById(params.session);
+	if (!session) {
 		throw error(404, "Session not found");
 	}
-
-	const { session } = results[0];
 
 	return {
 		session
