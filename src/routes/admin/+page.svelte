@@ -45,7 +45,7 @@
 				<Table.Head>Code</Table.Head>
 				<Table.Head>Created At</Table.Head>
 				<Table.Head class="text-center">Count</Table.Head>
-				<Table.Head class="text-center">Edit</Table.Head>
+				<Table.Head class="text-center">Moderate</Table.Head>
 				<Table.Head class="text-center">QR</Table.Head>
 			</Table.Row>
 		</Table.Header>
@@ -59,7 +59,7 @@
 					<Table.Cell class="text-center font-semibold">{questionCount}</Table.Cell>
 					<Table.Cell>
 						<Button variant="outline" size="sm" class="w-full" href={`/admin/${session.id}`}
-							>Edit
+							>Moderate
 						</Button>
 					</Table.Cell>
 					<Table.Cell>
