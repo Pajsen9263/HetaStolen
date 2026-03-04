@@ -15,6 +15,8 @@ Thumbs.db
 *.db
 *.sqlite
 
+/data
+
 # Env
 .env
 .env.*
