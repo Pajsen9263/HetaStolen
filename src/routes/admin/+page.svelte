@@ -1,35 +1,21 @@
 <script lang="ts">
 	import { Button, buttonVariants } from "@/ui/button";
-	import { Ellipsis } from "@lucide/svelte";
-	import type { PageProps } from "./$types";
+	import { Trash } from "@lucide/svelte";
 	import * as Table from "@/ui/table";
-	import * as Dropdown from "@/ui/dropdown-menu";
 	import * as Dialog from "@/ui/dialog";
-	import { Input } from "@/ui/input";
+	import * as InputGroup from "@/ui/input-group";
 	import { enhance } from "$app/forms";
 	import * as AlertDialog from "@/ui/alert-dialog";
 	import { Label } from "@/ui/label";
-	import { newSessionSchema } from "./schemas";
-	import { safeParse } from "valibot";
 
-	const { data }: PageProps = $props();
+	const { data } = $props();
 
 	let showCreateSessionForm = $state(false);
 
-	let createSessionFormValue = $state("");
-	let createSessionIssue = $derived.by(() => {
-		if (createSessionFormValue == "") {
-			return "";
-		}
-
-		const result = safeParse(newSessionSchema, { name: createSessionFormValue });
-
-		if (result.success) {
-			return "";
-		} else {
-			return result.issues[0].message;
-		}
-	});
+	// Might be worth moving this to a separate component if it gets more complex, but for now it's simple enough to keep here
+	let createSessionValue = $state("");
+	let createSessionValueLength = $derived(createSessionValue.length);
+	let createSessionFaulty = $derived(createSessionValueLength > 32);
 
 	type SelectedSession = {
 		id: string;
@@ -45,15 +31,8 @@
 	}
 </script>
 
-<main class="flex w-screen flex-col items-center px-8 pt-8">
-	<!-- <div class="flex items-center justify-between">
-		<h1 class="text-2xl font-bold">Sessions</h1>
-		<form method="POST" action="?/logout" use:enhance>
-			<Button type="submit" variant="outline" size="sm">Logout</Button>
-		</form>
-	</div> -->
-
-	<div class="flex min-w-3xl flex-col gap-3">
+<main class="flex w-screen flex-col items-center px-8">
+	<div class="mt-3 flex min-w-3xl flex-col gap-3">
 		<div class="flex justify-start">
 			<Button onclick={() => (showCreateSessionForm = true)}>Create Session</Button>
 		</div>
@@ -65,32 +44,33 @@
 						<Table.Head>#</Table.Head>
 						<Table.Head>Name</Table.Head>
 						<Table.Head>Code</Table.Head>
-						<Table.Head class="text-center">Count</Table.Head>
+						<Table.Head class="text-center">Question Count</Table.Head>
 						<Table.Head class="text-center">Actions</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
 					{#each data.sessions as { session, questionCount }, i (session.id)}
 						<Table.Row>
-							<Table.Cell>{i + 1}</Table.Cell>
+							<Table.Cell>
+								<span class="text-bold text-lg">
+									{i + 1}
+								</span>
+							</Table.Cell>
 							<Table.Cell class="text-lg font-semibold">{session.name}</Table.Cell>
-							<Table.Cell>{session.code}</Table.Cell>
-							<Table.Cell class="text-center font-semibold">{questionCount}</Table.Cell>
-							<Table.Cell class="text-center">
-								<Dropdown.Root>
-									<Dropdown.Trigger class={buttonVariants({ variant: "ghost", size: "icon" })}>
-										<Ellipsis />
-									</Dropdown.Trigger>
-									<Dropdown.Content>
-										<Dropdown.Item>
-											<a href={`/admin/${session.id}`}>Moderate</a>
-										</Dropdown.Item>
-										<Dropdown.Item
-											onclick={() => confirmDeleteSession(session.id, session.name)}
-											class="text-destructive">Delete</Dropdown.Item
-										>
-									</Dropdown.Content>
-								</Dropdown.Root>
+							<Table.Cell class="font-mono">{session.code}</Table.Cell>
+							<Table.Cell class="text-center text-lg font-semibold">{questionCount}</Table.Cell>
+							<Table.Cell class="flex gap-2">
+								<Button variant="outline" href={`/admin/${session.id}`} class="flex-1"
+									>Moderate</Button
+								>
+								<Button
+									variant="outline"
+									class="flex-1 text-destructive"
+									onclick={() => confirmDeleteSession(session.id, session.name)}
+								>
+									<Trash size={6} />
+									Remove
+								</Button>
 							</Table.Cell>
 						</Table.Row>
 					{/each}
@@ -108,7 +88,7 @@
 		<form
 			method="POST"
 			action="?/newSession"
-			class="flex flex-col gap-2"
+			class="flex flex-col gap-4"
 			use:enhance={() => {
 				return async ({ update }) => {
 					await update();
@@ -116,16 +96,32 @@
 				};
 			}}
 		>
-			<Input
-				type="text"
-				id="name"
-				name="name"
-				placeholder="Session Name"
-				bind:value={createSessionFormValue}
-				required
-			/>
-			<span class="text-sm text-wrap text-destructive">{createSessionIssue}</span>
-			<Button type="submit" class="flex-1">Create Session</Button>
+			<div class="space-y-2">
+				<Label for="name">Session Name</Label>
+				<InputGroup.Root>
+					<InputGroup.Input
+						type="text"
+						id="name"
+						name="name"
+						class={createSessionFaulty ? "text-destructive" : ""}
+						placeholder="Please Input Session Name..."
+						bind:value={createSessionValue}
+						required
+					/>
+					<InputGroup.Addon align="inline-end">
+						<span
+							class={[
+								"font-semibold",
+								"text-sm",
+								createSessionFaulty ? "text-destructive" : "text-muted"
+							]}
+						>
+							{createSessionValueLength} / 32
+						</span>
+					</InputGroup.Addon>
+				</InputGroup.Root>
+			</div>
+			<Button type="submit" disabled={createSessionFaulty} class="flex-1">Create Session</Button>
 		</form>
 	</Dialog.Content>
 </Dialog.Root>

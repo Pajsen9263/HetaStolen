@@ -12,7 +12,6 @@
 	<Card.Root class="w-full max-w-md">
 		<Card.Header>
 			<Card.Title class="text-2xl">Admin Login</Card.Title>
-			<Card.Description>Enter the admin password to continue</Card.Description>
 		</Card.Header>
 		<Card.Content>
 			<form method="POST" use:enhance class="space-y-4">
@@ -28,10 +27,10 @@
 				</div>
 
 				{#if form?.error}
-					<p class="text-sm text-red-500">{form.error}</p>
+					<p class="font-mono text-sm text-destructive">{form.error}</p>
 				{/if}
 
-				<Button type="submit" class="mt-4 w-full">Login</Button>
+				<Button type="submit" class="w-full">Login</Button>
 			</form>
 		</Card.Content>
 	</Card.Root>
