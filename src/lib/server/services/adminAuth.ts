@@ -57,10 +57,10 @@ export class AdminAuthService implements IAdminAuthService {
 		} else {
 			this.#secretPassword = generateSecretPassword(16);
 			console.log("\n🔐 Admin Password:", this.#secretPassword);
+			console.log("This password is valid until server restart.\n");
 		}
 
 		this.#loggedInAdmin = null;
-		console.log("This password is valid until server restart.\n");
 	}
 
 	login(password: string, ip: string, userAgent: string, cookies: Cookies): boolean {
