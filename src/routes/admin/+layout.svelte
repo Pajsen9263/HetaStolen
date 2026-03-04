@@ -1,9 +1,19 @@
 <script lang="ts">
+	import { enhance } from "$app/forms";
+	import { Button } from "@/ui/button";
+	import ThemePicker from "$lib/components/ThemePicker.svelte";
+
 	const { children } = $props();
 </script>
 
-<main class="flex w-screen justify-center">
-	<div class="flex w-1/3 flex-col items-center gap-3">
-		{@render children()}
+<nav class="flex h-fit w-full items-center justify-between border border-b px-4 py-4">
+	<h1 class="text-2xl font-bold">Admin Panel</h1>
+	<div class="flex gap-2">
+		<ThemePicker variant="ghost" size="icon" />
+		<form method="POST" action="?/logout" use:enhance>
+			<Button type="submit" variant="ghost" class="text-lg font-semibold">Logout</Button>
+		</form>
 	</div>
-</main>
+</nav>
+
+{@render children()}

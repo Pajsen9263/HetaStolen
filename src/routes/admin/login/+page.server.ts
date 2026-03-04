@@ -1,7 +1,10 @@
-import type { Actions, PageServerLoad } from "./$types";
-import { loginSchema } from "./+page.svelte";
 import * as v from "valibot";
 import { fail, redirect } from "@sveltejs/kit";
+import type { Actions, PageServerLoad } from "./$types";
+
+const loginSchema = v.object({
+	adminSecret: v.pipe(v.string(), v.minLength(1, "Password is required"))
+});
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (locals.isAdmin) {

@@ -1,8 +1,12 @@
 import type { PageServerLoad, Actions } from "./$types";
-import { createSessionSchema } from "./+page.svelte";
 import * as v from "valibot";
-import { createSession, getAllSessionsWithQuestionCount } from "$lib/server/db/queries";
+import {
+	createSession,
+	deleteSessionById,
+	getAllSessionsWithQuestionCount
+} from "$lib/server/db/queries";
 import { error, redirect } from "@sveltejs/kit";
+import { newSessionSchema, deleteSessionSchema } from "./schemas";
 
 export const load: PageServerLoad = async () => {
 	const sessions = await getAllSessionsWithQuestionCount();
@@ -12,13 +16,13 @@ export const load: PageServerLoad = async () => {
 	};
 };
 
-type FormData = v.InferInput<typeof createSessionSchema>;
-
 export const actions = {
-	create: async ({ request }) => {
-		const formData = Object.fromEntries(await request.formData()) as FormData;
+	newSession: async ({ request }) => {
+		const formData = Object.fromEntries(await request.formData()) as v.InferInput<
+			typeof newSessionSchema
+		>;
 
-		const result = v.safeParse(createSessionSchema, formData);
+		const result = v.safeParse(newSessionSchema, formData);
 
 		if (!result.success) {
 			throw error(400, `Invalid form data`);
@@ -27,6 +31,25 @@ export const actions = {
 		const name = result.output.name;
 
 		await createSession(name);
+	},
+	deleteSession: async ({ request }) => {
+		const formData = Object.fromEntries(await request.formData()) as v.InferInput<
+			typeof deleteSessionSchema
+		>;
+
+		const result = v.safeParse(deleteSessionSchema, formData);
+
+		if (!result.success) {
+			throw error(400, `Invalid form data`);
+		}
+
+		const id = result.output.id;
+
+		const success = await deleteSessionById(id);
+
+		if (!success) {
+			throw error(500, `Failed to delete session`);
+		}
 	},
 	// This is only a temporary logout action, will need to rethink this.
 	logout: async ({ locals, cookies }) => {

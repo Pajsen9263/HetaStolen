@@ -1,11 +1,3 @@
-<script lang="ts" module>
-	import * as v from "valibot";
-
-	export const loginSchema = v.object({
-		adminSecret: v.pipe(v.string(), v.minLength(1, "Password is required"))
-	});
-</script>
-
 <script lang="ts">
 	import { enhance } from "$app/forms";
 	import * as Card from "$lib/components/ui/card";
@@ -13,8 +5,7 @@
 	import { Label } from "$lib/components/ui/label";
 	import { Button } from "$lib/components/ui/button";
 
-	// I don't really like that this isn't as typesafe as my implementation in Blocketia, I will refactor this.
-	let { form } = $props<{ form: { error: string } | null }>();
+	let { form } = $props();
 </script>
 
 <div class="flex min-h-screen items-center justify-center">
