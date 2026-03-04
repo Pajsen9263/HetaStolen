@@ -4,7 +4,7 @@ export const newSessionSchema = v.object({
 	name: v.pipe(
 		v.string(),
 		v.minLength(1, "Name must be at least 2 characters long"),
-		v.maxLength(64, "Name can't be longer than 64 characters"),
+		v.maxLength(32, "Name can't be longer than 32 characters"),
 		v.trim()
 	)
 });
