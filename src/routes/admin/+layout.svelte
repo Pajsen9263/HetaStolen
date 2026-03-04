@@ -13,9 +13,13 @@
 	<h1 class="text-2xl font-bold">Admin Panel</h1>
 	<div class="flex gap-2">
 		{#if !isLoginPage}
-			<form method="POST" action="?/logout" use:enhance>
-				<Button type="submit" variant="ghost" class="cursor-pointer text-lg">Logout</Button>
-			</form>
+			<Button
+				type="submit"
+				variant="ghost"
+				href="/admin/logout"
+				data-sveltekit-preload-data="off"
+				class="cursor-pointer text-lg">Logout</Button
+			>
 		{/if}
 		<ThemePicker variant="ghost" size="icon" />
 	</div>

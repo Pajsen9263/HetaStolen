@@ -1,11 +1,11 @@
-import type { PageServerLoad, Actions } from "./$types";
+import type { PageServerLoad } from "./$types";
 import * as v from "valibot";
 import {
 	createSession,
 	deleteSessionById,
 	getAllSessionsWithQuestionCount
 } from "$lib/server/db/queries";
-import { error, redirect } from "@sveltejs/kit";
+import { error } from "@sveltejs/kit";
 import { newSessionSchema, deleteSessionSchema } from "./schemas";
 
 export const load: PageServerLoad = async () => {
@@ -50,10 +50,5 @@ export const actions = {
 		if (!success) {
 			throw error(500, `Failed to delete session`);
 		}
-	},
-	// This is only a temporary logout action, will need to rethink this.
-	logout: async ({ locals, cookies }) => {
-		locals.adminAuthService.logout(cookies);
-		throw redirect(303, "/admin/login");
 	}
-} satisfies Actions;
+};
