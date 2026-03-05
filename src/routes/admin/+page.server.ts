@@ -1,15 +1,11 @@
 import type { PageServerLoad } from "./$types";
 import * as v from "valibot";
-import {
-	createSession,
-	deleteSessionById,
-	getAllSessionsWithQuestionCount
-} from "$lib/server/db/queries";
+import { createSession, deleteSessionById, getAllSessionsWithCounts } from "$lib/server/db/queries";
 import { error } from "@sveltejs/kit";
 import { newSessionSchema, deleteSessionSchema } from "./schemas";
 
 export const load: PageServerLoad = async () => {
-	const sessions = await getAllSessionsWithQuestionCount();
+	const sessions = await getAllSessionsWithCounts();
 
 	return {
 		sessions
