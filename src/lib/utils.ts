@@ -16,3 +16,15 @@ export type WithElementRef<T, U extends HTMLElement = HTMLElement> = T & { ref?:
 export type MaybeNull<T> = {
 	[K in keyof T]: T[K] | undefined;
 };
+
+export function capitalize(string: string): string {
+	return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export async function parseForm<TSchema extends Parameters<typeof v.safeParse>[0]>(
+	request: Request,
+	schema: TSchema
+) {
+	const formData = Object.fromEntries(await request.formData());
+	return v.safeParse(schema, formData);
+}
