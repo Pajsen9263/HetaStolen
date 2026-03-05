@@ -25,11 +25,9 @@ export const load: PageServerLoad = async ({ params, locals, cookies }) => {
 };
 
 export const actions: Actions = {
-	logout: async ({ params, locals, cookies }) => {
+	logout: async ({ locals, cookies }) => {
 		locals.crowdAuthService.logout(cookies);
-		const session = await getSessionById(params.session);
-		const code = session?.code ?? "";
-		redirect(303, `/join?code=${code}`);
+		redirect(303, `/join`);
 	},
 
 	newQuestion: async ({ request, params, locals, cookies }) => {

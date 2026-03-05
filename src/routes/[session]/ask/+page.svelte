@@ -2,6 +2,7 @@
 	import { enhance } from "$app/forms";
 	import { cn } from "$lib/utils";
 	import type { PageData, ActionData } from "./$types";
+	import { Button } from "@/ui/button";
 
 	const MAX_LENGTH = 128;
 
@@ -9,13 +10,6 @@
 
 	let content = $state("");
 	let charsLeft = $derived(MAX_LENGTH - content.length);
-
-	// Clear the textarea after a successful submission
-	$effect(() => {
-		if (form?.success) {
-			content = "";
-		}
-	});
 </script>
 
 <svelte:head>
@@ -29,22 +23,23 @@
 				<h1 class="text-2xl font-bold tracking-tight">{data.session.name}</h1>
 				<p class="text-sm text-muted-foreground">Submit a question for the speaker</p>
 			</div>
-			<form method="POST" action="?/logout" use:enhance>
-				<button
-					type="submit"
-					class="mt-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
-				>
-					Leave session
-				</button>
+			<form
+				method="POST"
+				action="?/logout"
+				use:enhance={() => {
+					return async ({ update }) => {
+						await update();
+						content = "";
+					};
+				}}
+			>
+				<Button variant="outline" size="sm" type="submit">Leave session</Button>
 			</form>
 		</div>
 
 		{#if form?.success}
 			<div class="rounded-lg border border-primary/20 bg-primary/10 p-4">
 				<p class="font-medium text-primary">Question submitted!</p>
-				<p class="mt-1 text-sm text-muted-foreground">
-					Your question has been sent to the speaker.
-				</p>
 			</div>
 		{/if}
 

@@ -109,7 +109,7 @@
 			class="absolute right-8 bottom-8 flex flex-col items-center gap-2 rounded-xl border bg-card p-4 shadow-xl"
 		>
 			<QRCode data={qrUrl} size={150} />
-			<p class="font-mono text-sm font-semibold tracking-widest text-muted-foreground">
+			<p class="font-mono font-semibold tracking-widest text-muted-foreground">
 				{data.session.code}
 			</p>
 		</div>
