@@ -8,7 +8,7 @@
 	let { form } = $props();
 </script>
 
-<div class="flex min-h-screen items-center justify-center">
+<div class="flex items-center justify-center md:h-[calc(100vh-4rem)]">
 	<Card.Root class="w-full max-w-md">
 		<Card.Header>
 			<Card.Title class="text-2xl">Admin Login</Card.Title>
