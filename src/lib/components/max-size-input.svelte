@@ -30,7 +30,13 @@
 		required
 	/>
 	<InputGroup.Addon align="inline-end">
-		<span class={["font-semibold", "text-sm", maxSizeExceeded ? "text-destructive" : "text-muted"]}>
+		<span
+			class={[
+				"font-semibold",
+				"text-sm",
+				maxSizeExceeded ? "text-destructive" : "text-muted-foreground"
+			]}
+		>
 			{valueLength} / {max}
 		</span>
 	</InputGroup.Addon>
