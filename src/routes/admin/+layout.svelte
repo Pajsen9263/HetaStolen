@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { enhance } from "$app/forms";
 	import { Button } from "@/ui/button";
 	import ThemePicker from "$lib/components/theme-picker.svelte";
 	import { page } from "$app/state";
@@ -9,8 +8,10 @@
 	const { children } = $props();
 </script>
 
-<nav class="flex h-fit w-full items-center justify-between border-b px-4 py-3">
-	<h1 class="text-2xl font-bold">Admin Panel</h1>
+<nav class="flex h-16 w-full items-center justify-between border-b px-4 py-3">
+	<a href="/admin">
+		<h1 class="text-2xl font-bold">Admin Panel</h1>
+	</a>
 	<div class="flex gap-2">
 		{#if !isLoginPage}
 			<Button
