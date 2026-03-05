@@ -3,19 +3,16 @@
 	import { Trash } from "@lucide/svelte";
 	import * as Table from "@/ui/table";
 	import * as Dialog from "@/ui/dialog";
-	import * as InputGroup from "@/ui/input-group";
 	import { enhance } from "$app/forms";
 	import * as AlertDialog from "@/ui/alert-dialog";
 	import { Label } from "@/ui/label";
+	import MaxSizeInput from "@/max-size-input.svelte";
 
 	const { data } = $props();
 
-	let showCreateSessionForm = $state(false);
+	let createSessionFaulty = $state(false);
 
-	// Might be worth moving this to a separate component if it gets more complex, but for now it's simple enough to keep here
-	let createSessionValue = $state("");
-	let createSessionValueLength = $derived(createSessionValue.length);
-	let createSessionFaulty = $derived(createSessionValueLength > 32);
+	let showCreateSessionForm = $state(false);
 
 	type SelectedSession = {
 		id: string;
@@ -45,11 +42,12 @@
 						<Table.Head>Name</Table.Head>
 						<Table.Head>Code</Table.Head>
 						<Table.Head class="text-center">Question Count</Table.Head>
+						<Table.Head class="text-center">Speaker Count</Table.Head>
 						<Table.Head class="text-center">Actions</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
-					{#each data.sessions as { session, questionCount }, i (session.id)}
+					{#each data.sessions as { session, questionCount, speakerCount }, i (session.id)}
 						<Table.Row>
 							<Table.Cell>
 								<span class="text-bold text-lg">
@@ -59,6 +57,7 @@
 							<Table.Cell class="text-lg font-semibold">{session.name}</Table.Cell>
 							<Table.Cell class="font-mono">{session.code}</Table.Cell>
 							<Table.Cell class="text-center text-lg font-semibold">{questionCount}</Table.Cell>
+							<Table.Cell class="text-center text-lg font-semibold">{speakerCount}</Table.Cell>
 							<Table.Cell class="flex gap-2">
 								<Button variant="outline" href={`/admin/${session.id}`} class="flex-1"
 									>Moderate</Button
@@ -98,28 +97,14 @@
 		>
 			<div class="space-y-2">
 				<Label for="name">Session Name</Label>
-				<InputGroup.Root>
-					<InputGroup.Input
-						type="text"
-						id="name"
-						name="name"
-						class={createSessionFaulty ? "text-destructive" : ""}
-						placeholder="Please Input Session Name..."
-						bind:value={createSessionValue}
-						required
-					/>
-					<InputGroup.Addon align="inline-end">
-						<span
-							class={[
-								"font-semibold",
-								"text-sm",
-								createSessionFaulty ? "text-destructive" : "text-muted"
-							]}
-						>
-							{createSessionValueLength} / 32
-						</span>
-					</InputGroup.Addon>
-				</InputGroup.Root>
+				<MaxSizeInput
+					bind:maxSizeExceeded={createSessionFaulty}
+					max={32}
+					id="name"
+					name="name"
+					placeholder="Please Input Session Name..."
+					required
+				/>
 			</div>
 			<Button type="submit" disabled={createSessionFaulty} class="flex-1">Create Session</Button>
 		</form>
