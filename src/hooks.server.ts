@@ -1,7 +1,11 @@
-import { redirect, error, type Handle } from "@sveltejs/kit";
-import { AdminAuthService } from "$lib/server/services/adminAuth";
+import { error, type Handle } from "@sveltejs/kit";
+import { AdminAuthService } from "$lib/server/services/admin-auth.service";
+import { QuestionService } from "$lib/server/services/question.service";
+import { SpeakerService } from "$lib/server/services/speaker.service";
 
 const adminAuthService = new AdminAuthService();
+const questionService = new QuestionService();
+const speakerService = new SpeakerService();
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const userAgent = event.request.headers.get("user-agent");
@@ -13,17 +17,12 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	// Service Injection
 	event.locals.adminAuthService = adminAuthService;
+	event.locals.questionService = questionService;
+	event.locals.speakerService = speakerService;
 
 	// Check authentication status
 	event.locals.isAdmin = adminAuthService.isAuthenticated(ip, userAgent, event.cookies);
 	event.locals.requestInfo = { ip, userAgent };
-
-	// Protect /admin routes (except /admin/login)
-	if (event.url.pathname.startsWith("/admin") && event.url.pathname !== "/admin/login") {
-		if (!event.locals.isAdmin) {
-			throw redirect(303, "/admin/login");
-		}
-	}
 
 	return resolve(event);
 };

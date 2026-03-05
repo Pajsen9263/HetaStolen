@@ -5,6 +5,7 @@ const db = drizzle(env.DB_FILE_NAME);
 
 try {
 	db.$client.run("PRAGMA journal_mode = WAL;");
+	db.$client.run("PRAGMA foreign_keys = ON;");
 } catch (e) {
 	console.error("Failed to enable WAL", e);
 }
