@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ThemePicker from "$lib/components/ThemePicker.svelte";
+	import ThemePicker from "$lib/components/theme-picker.svelte";
 
 	const { children } = $props();
 </script>

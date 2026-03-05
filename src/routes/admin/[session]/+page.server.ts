@@ -1,7 +1,13 @@
-import { getSessionWithRelations } from "$lib/server/db/queries";
+import { getSessionWithRelations, getSpeakerById, getQuestionById } from "$lib/server/db/queries";
 import type { PageServerLoad } from "./$types";
 import { error } from "@sveltejs/kit";
-import { createQuestionSchema, deleteSchema } from "./schemas";
+import {
+	createQuestionSchema,
+	deleteSchema,
+	startRoundSchema,
+	setThemeSchema,
+	toggleQRSchema
+} from "./schemas";
 import { parseForm } from "$lib/utils";
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -78,5 +84,56 @@ export const actions = {
 		if (!ok) {
 			throw error(500, "Failed to delete speaker");
 		}
+	},
+	startRound: async ({ request, params, locals }) => {
+		const result = await parseForm(request, startRoundSchema);
+
+		if (!result.success) {
+			throw error(400, "Invalid form data");
+		}
+
+		const { speakerId, questionId } = result.output;
+
+		const [speaker, question] = await Promise.all([
+			getSpeakerById(speakerId),
+			getQuestionById(questionId)
+		]);
+
+		if (!speaker) {
+			throw error(404, "Speaker not found");
+		}
+
+		if (!question) {
+			throw error(404, "Question not found");
+		}
+
+		locals.projectorService.startRound(
+			params.session,
+			speaker.id,
+			speaker.name,
+			question.id,
+			question.content
+		);
+	},
+	cancelRound: async ({ params, locals }) => {
+		locals.projectorService.cancelRound(params.session);
+	},
+	setTheme: async ({ request, params, locals }) => {
+		const result = await parseForm(request, setThemeSchema);
+
+		if (!result.success) {
+			throw error(400, "Invalid form data");
+		}
+
+		locals.projectorService.setTheme(params.session, result.output.theme);
+	},
+	toggleQR: async ({ request, params, locals }) => {
+		const result = await parseForm(request, toggleQRSchema);
+
+		if (!result.success) {
+			throw error(400, "Invalid form data");
+		}
+
+		locals.projectorService.toggleQR(params.session, result.output.visible);
 	}
 };

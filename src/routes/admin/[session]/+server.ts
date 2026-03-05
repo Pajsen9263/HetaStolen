@@ -14,9 +14,21 @@ export const GET: RequestHandler = ({ request, locals, params }) => {
 			emit(`speaker${capitalize(event.type)}`, serializedData);
 		});
 
+		const unsubPs = locals.projectorService.subscribe(params.session, (event) => {
+			if (event.type === "roundStarted" || event.type === "roundCancelled") {
+				// Only emit the timer-relevant part of the state to the admin dashboard
+				emit("timerUpdate", JSON.stringify({ timerEndTimestamp: event.state.timerEndTimestamp }));
+			} else if (event.type === "themeChanged") {
+				emit("themeChanged", JSON.stringify({ theme: event.state.theme }));
+			} else if (event.type === "qrToggled") {
+				emit("qrToggled", JSON.stringify({ qrVisible: event.state.qrVisible }));
+			}
+		});
+
 		return () => {
 			unsubQs();
 			unsubSs();
+			unsubPs();
 		};
 	});
 };

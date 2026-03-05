@@ -20,6 +20,12 @@ const preparedGetSessionById = db
 	.where(eq(sessionTable.id, sql.placeholder("sessionId")))
 	.prepare();
 
+const preparedGetSessionByCode = db
+	.select()
+	.from(sessionTable)
+	.where(eq(sessionTable.code, sql.placeholder("code")))
+	.prepare();
+
 const preparedGetSessionWithRelations = db
 	.select({
 		session: sessionTable,
@@ -55,6 +61,16 @@ export async function getSessionById(sessionId: string) {
 		return result[0] ?? null;
 	} catch (error) {
 		console.error("Error fetching session by ID:", error);
+		return null;
+	}
+}
+
+export async function getSessionByCode(code: string) {
+	try {
+		const result = await preparedGetSessionByCode.execute({ code: code.toUpperCase() });
+		return result[0] ?? null;
+	} catch (error) {
+		console.error("Error fetching session by code:", error);
 		return null;
 	}
 }
