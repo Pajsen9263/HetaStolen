@@ -9,7 +9,7 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
 
 	// Protect all other admin routes
 	if (!locals.isAdmin) {
-		throw redirect(303, "/admin/login");
+		redirect(303, "/admin/login");
 	}
 
 	return {};

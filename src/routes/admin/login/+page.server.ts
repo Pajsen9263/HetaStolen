@@ -7,7 +7,7 @@ const loginSchema = v.object({
 
 export const load = async ({ locals }) => {
 	if (locals.isAdmin) {
-		throw redirect(303, "/admin");
+		redirect(303, "/admin");
 	}
 };
 
@@ -34,6 +34,6 @@ export const actions = {
 			});
 		}
 
-		throw redirect(303, "/admin");
+		redirect(303, "/admin");
 	}
 };

@@ -29,7 +29,7 @@ if (!building) {
 export const handle: Handle = async ({ event, resolve }) => {
 	const userAgent = event.request.headers.get("user-agent");
 	if (!userAgent) {
-		throw error(400, "User-Agent header is required");
+		error(400, "User-Agent header is required");
 	}
 
 	const ip = event.getClientAddress();

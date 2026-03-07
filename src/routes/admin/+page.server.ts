@@ -20,7 +20,7 @@ export const actions = {
 		const result = v.safeParse(newSessionSchema, formData);
 
 		if (!result.success) {
-			throw error(400, `Invalid form data`);
+			error(400, `Invalid form data`);
 		}
 
 		const name = result.output.name;
@@ -35,7 +35,7 @@ export const actions = {
 		const result = v.safeParse(deleteSessionSchema, formData);
 
 		if (!result.success) {
-			throw error(400, `Invalid form data`);
+			error(400, `Invalid form data`);
 		}
 
 		const id = result.output.id;
@@ -43,7 +43,7 @@ export const actions = {
 		const success = await locals.sessionService.deleteSessionById(id);
 
 		if (!success) {
-			throw error(500, `Failed to delete session`);
+			error(500, `Failed to delete session`);
 		}
 	}
 };

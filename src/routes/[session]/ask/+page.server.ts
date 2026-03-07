@@ -6,11 +6,11 @@ export const load: PageServerLoad = async ({ params, locals, cookies }) => {
 	const session = await locals.sessionService.getSessionById(params.session);
 
 	if (!session) {
-		throw error(404, "Session not found.");
+		error(404, "Session not found.");
 	}
 
 	if (!locals.crowdAuthService.isAuthenticated(session.id, cookies)) {
-		throw redirect(303, `/join?code=${session.code}`);
+		redirect(303, `/join?code=${session.code}`);
 	}
 
 	return {
@@ -27,7 +27,6 @@ export const actions: Actions = {
 		locals.crowdAuthService.logout(cookies);
 		redirect(303, `/join`);
 	},
-
 	newQuestion: async ({ request, params, locals, cookies }) => {
 		const session = await locals.sessionService.getSessionById(params.session);
 

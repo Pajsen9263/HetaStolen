@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const projectorState = locals.projectorService.getState(params.session);
 
 	if (!session) {
-		throw error(404, "Session not found");
+		error(404, "Session not found");
 	}
 
 	return {
@@ -29,7 +29,7 @@ export const actions = {
 		const result = await parseForm(request, createQuestionSchema);
 
 		if (!result.success) {
-			throw error(400, "Invalid form data");
+			error(400, "Invalid form data");
 		}
 
 		const { content } = result.output;
@@ -37,14 +37,14 @@ export const actions = {
 		const ok = await locals.questionService.createQuestion(params.session, content);
 
 		if (!ok) {
-			throw error(500, "Failed to create question");
+			error(500, "Failed to create question");
 		}
 	},
 	deleteQuestion: async ({ request, locals }) => {
 		const result = await parseForm(request, deleteSchema);
 
 		if (!result.success) {
-			throw error(400, "Invalid form data");
+			error(400, "Invalid form data");
 		}
 
 		const { id } = result.output;
@@ -52,14 +52,14 @@ export const actions = {
 		const ok = await locals.questionService.deleteQuestion(id);
 
 		if (!ok) {
-			throw error(500, "Failed to delete question");
+			error(500, "Failed to delete question");
 		}
 	},
 	newSpeaker: async ({ request, params, locals }) => {
 		const result = await parseForm(request, createQuestionSchema);
 
 		if (!result.success) {
-			throw error(400, "Invalid form data");
+			error(400, "Invalid form data");
 		}
 
 		const { content } = result.output;
@@ -67,7 +67,7 @@ export const actions = {
 		const ok = await locals.speakerService.createSpeaker(params.session, content);
 
 		if (!ok) {
-			throw error(500, "Failed to create speaker");
+			error(500, "Failed to create speaker");
 		}
 	},
 	deleteSpeaker: async ({ request, locals }) => {
@@ -75,7 +75,7 @@ export const actions = {
 
 		if (!result.success) {
 			console.log(result.issues);
-			throw error(400, "Invalid form data");
+			error(400, "Invalid form data");
 		}
 
 		const { id } = result.output;
@@ -83,14 +83,14 @@ export const actions = {
 		const ok = await locals.speakerService.deleteSpeaker(id);
 
 		if (!ok) {
-			throw error(500, "Failed to delete speaker");
+			error(500, "Failed to delete speaker");
 		}
 	},
 	startRound: async ({ request, params, locals }) => {
 		const result = await parseForm(request, startRoundSchema);
 
 		if (!result.success) {
-			throw error(400, "Invalid form data");
+			error(400, "Invalid form data");
 		}
 
 		const { speakerId, questionId } = result.output;
@@ -101,11 +101,11 @@ export const actions = {
 		]);
 
 		if (!speaker) {
-			throw error(404, "Speaker not found");
+			error(404, "Speaker not found");
 		}
 
 		if (!question) {
-			throw error(404, "Question not found");
+			error(404, "Question not found");
 		}
 
 		locals.projectorService.startRound(params.session, speaker.name, question.content);
@@ -117,7 +117,7 @@ export const actions = {
 		const result = await parseForm(request, setThemeSchema);
 
 		if (!result.success) {
-			throw error(400, "Invalid form data");
+			error(400, "Invalid form data");
 		}
 
 		locals.projectorService.setTheme(params.session, result.output.theme);
@@ -126,7 +126,7 @@ export const actions = {
 		const result = await parseForm(request, toggleQRSchema);
 
 		if (!result.success) {
-			throw error(400, "Invalid form data");
+			error(400, "Invalid form data");
 		}
 
 		locals.projectorService.toggleQR(params.session, result.output.visible);

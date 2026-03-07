@@ -5,7 +5,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const session = await locals.sessionService.getSessionById(params.session);
 
 	if (!session) {
-		throw error(404, "Session not found");
+		error(404, "Session not found");
 	}
 
 	const projectorState = locals.projectorService.getState(params.session);
