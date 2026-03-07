@@ -10,19 +10,21 @@ import {
 } from "./schemas";
 import { parseForm } from "$lib/utils";
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, locals }) => {
 	const session = await getSessionWithRelations(params.session);
+
+	const projectorState = locals.projectorService.getState(params.session);
 
 	if (!session) {
 		throw error(404, "Session not found");
 	}
 
 	return {
-		session
+		session,
+		projector: projectorState
 	};
 };
 
-// I should probably deal with the validation better, but I'm moving fast right now.
 export const actions = {
 	newQuestion: async ({ request, params, locals }) => {
 		const result = await parseForm(request, createQuestionSchema);
