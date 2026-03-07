@@ -6,7 +6,7 @@
 	import { enhance } from "$app/forms";
 	import * as AlertDialog from "@/ui/alert-dialog";
 	import { Label } from "@/ui/label";
-	import MaxSizeInput from "@/max-size-input.svelte";
+	import MaxSizeInput from "@/maxSize/Input.svelte";
 
 	const { data } = $props();
 

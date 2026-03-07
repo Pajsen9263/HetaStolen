@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button } from "@/ui/button";
-	import ThemePicker from "$lib/components/theme-picker.svelte";
+	import ThemePicker from "$lib/components/ThemePicker.svelte";
 	import { page } from "$app/state";
 
 	const isLoginPage = $derived(page.url.pathname === "/admin/login");
