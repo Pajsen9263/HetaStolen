@@ -22,6 +22,8 @@ export function useSSE<T extends SSEEventMap>(url: string, eventHandlers: T) {
 		});
 	});
 
+	// TODO: Might want to add some resiliency here, like retry logic or a way to notify the user of connection issues
+
 	evSource.onerror = (error) => {
 		console.error("EventSource error:", error);
 	};
