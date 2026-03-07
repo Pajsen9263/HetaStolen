@@ -4,11 +4,7 @@
 
 	const { data, form }: { data: PageData; form: ActionData } = $props();
 
-	// prefillCode is static server-loaded data — intentionally read once at init
-	// svelte-ignore state_referenced_locally
-	const prefillCode = data.prefillCode;
-
-	let code = $state((prefillCode ?? "").toUpperCase());
+	let code = $derived((data.prefillCode ?? "").toUpperCase());
 
 	function handleInput(e: Event) {
 		const input = e.currentTarget as HTMLInputElement;
@@ -16,13 +12,6 @@
 			.toUpperCase()
 			.replace(/[^A-Z0-9]/g, "")
 			.slice(0, 6);
-	}
-
-	// Action that auto-submits the form if a prefill code was provided (QR flow)
-	function autosubmit(node: HTMLFormElement) {
-		if (prefillCode) {
-			node.requestSubmit();
-		}
 	}
 </script>
 
@@ -36,7 +25,7 @@
 		<p class="text-sm text-muted-foreground">Enter the 6-character code shown on the screen</p>
 	</div>
 
-	<form method="POST" class="flex w-full max-w-sm flex-col gap-4" use:enhance use:autosubmit>
+	<form method="POST" class="flex w-full max-w-sm flex-col gap-4" use:enhance>
 		<div class="flex flex-col gap-2">
 			<label for="code" class="sr-only">Session code</label>
 			<input
@@ -64,7 +53,7 @@
 			disabled={code.length !== 6}
 			class="inline-flex h-12 items-center justify-center rounded-lg bg-primary px-6 text-base font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
 		>
-			{prefillCode ? "Joining…" : "Join Session"}
+			Join Session
 		</button>
 	</form>
 </main>

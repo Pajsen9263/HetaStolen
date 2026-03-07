@@ -4,8 +4,18 @@ import { joinSchema } from "$lib/schemas";
 import { parseForm } from "$lib/utils";
 import { getSessionByCode } from "$lib/server/db/queries";
 
-export const load: PageServerLoad = async ({ url }) => {
+export const load: PageServerLoad = async ({ url, cookies, locals }) => {
 	const prefillCode = url.searchParams.get("code");
+
+	if (prefillCode) {
+		const session = await getSessionByCode(prefillCode);
+
+		if (session) {
+			locals.crowdAuthService.join(session.id, cookies);
+			redirect(303, `/${session.id}/ask`);
+		}
+	}
+
 	return { prefillCode };
 };
 
