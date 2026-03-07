@@ -1,0 +1,15 @@
+services:
+  hetastolen:
+    image: hetastolen:latest
+    container_name: hetastolen
+    restart: unless-stopped
+    environment:
+      # Origin must be defined because of sveltekit's csrf protection with adapter-node
+      ORIGIN: http://localhost:3000
+      # These are important in reverse proxy enviroments.
+      ADDRESS_HEADER: X-Forwarded-For
+      PROTOCOL_HEADER: X-Forwarded-Proto
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/data
