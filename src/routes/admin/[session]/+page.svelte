@@ -10,6 +10,7 @@
 	import CircleTimer from "$lib/components/CircleTimer.svelte";
 	import { enhance } from "$app/forms";
 	import * as Item from "@/ui/item";
+	import CopyButton from "@/CopyButton.svelte";
 
 	const { data } = $props();
 
@@ -131,10 +132,8 @@
 					target="_blank"
 					href={`${page.url.origin}/join/?code=${data.session.code}`}>Join</Button
 				>
-				<Button
-					variant="outline"
-					onclick={() => navigator.clipboard.writeText(`${page.url.origin}/${data.session.id}`)}
-					>Copy Projector Link</Button
+				<CopyButton variant="outline" toCopy={`${page.url.origin}/${data.session.id}`}>
+					Copy Link</CopyButton
 				>
 			</Item.Actions>
 		</Item.Root>
