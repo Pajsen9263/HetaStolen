@@ -1,5 +1,5 @@
 import type { RequestHandler } from "./$types";
-import { createSSEStream } from "$lib/sse";
+import { createSSEStream } from "$lib/sse/create-stream";
 import { capitalize } from "$lib/utils";
 
 export const GET: RequestHandler = ({ request, locals, params }) => {
