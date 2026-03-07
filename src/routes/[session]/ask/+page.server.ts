@@ -8,11 +8,11 @@ export const load: PageServerLoad = async ({ params, locals, cookies }) => {
 	const session = await getSessionById(params.session);
 
 	if (!session) {
-		error(404, "Session not found.");
+		throw error(404, "Session not found.");
 	}
 
 	if (!locals.crowdAuthService.isAuthenticated(session.id, cookies)) {
-		redirect(303, `/join?code=${session.code}`);
+		throw redirect(303, `/join?code=${session.code}`);
 	}
 
 	return {

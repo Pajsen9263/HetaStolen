@@ -1,4 +1,4 @@
-import { int, sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { int, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const sessionTable = sqliteTable("session", {
 	id: text().primaryKey(),

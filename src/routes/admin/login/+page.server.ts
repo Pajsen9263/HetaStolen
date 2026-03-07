@@ -1,12 +1,11 @@
 import * as v from "valibot";
 import { fail, redirect } from "@sveltejs/kit";
-import type { Actions, PageServerLoad } from "./$types";
 
 const loginSchema = v.object({
 	adminSecret: v.pipe(v.string(), v.minLength(1, "Password is required"))
 });
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load = async ({ locals }) => {
 	if (locals.isAdmin) {
 		throw redirect(303, "/admin");
 	}
@@ -37,4 +36,4 @@ export const actions = {
 
 		throw redirect(303, "/admin");
 	}
-} satisfies Actions;
+};
