@@ -19,13 +19,13 @@
 	// Set up SSE with event handlers
 	useSSE(`/admin/${page.params.session}`, {
 		questionCreated: (newQuestion: Question) => {
-			questions.push(newQuestion);
+			questions = [...questions, newQuestion];
 		},
 		questionDeleted: (deletedQuestion: Question) => {
 			questions = questions.filter((q) => q.id !== deletedQuestion.id);
 		},
 		speakerCreated: (newSpeaker: Speaker) => {
-			speakers.push(newSpeaker);
+			speakers = [...speakers, newSpeaker];
 		},
 		speakerDeleted: (deletedSpeaker: Speaker) => {
 			speakers = speakers.filter((s) => s.id !== deletedSpeaker.id);
