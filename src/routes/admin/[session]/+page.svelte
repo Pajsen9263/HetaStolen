@@ -6,7 +6,7 @@
 	import EntityForm from "./EntityForm.svelte";
 	import { Separator } from "@/ui/separator/";
 	import { Button } from "@/ui/button/";
-	import { useSSE } from "$lib/hooks/useSSE.svelte";
+	import { useSSE } from "$lib/sse/useSSE.svelte";
 	import CircleTimer from "$lib/components/CircleTimer.svelte";
 	import { enhance } from "$app/forms";
 	import * as Item from "@/ui/item";

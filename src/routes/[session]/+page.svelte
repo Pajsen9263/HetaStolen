@@ -4,7 +4,7 @@
 	import type { ProjectorState } from "$lib/server/services/projector.service";
 	import CircleTimer from "$lib/components/CircleTimer.svelte";
 	import QRCode from "@castlenine/svelte-qrcode";
-	import { useSSE } from "$lib/hooks/useSSE.svelte";
+	import { useSSE } from "$lib/sse/useSSE.svelte";
 	import logo from "$lib/assets/android-chrome-512x512.png";
 	import { onMount } from "svelte";
 
