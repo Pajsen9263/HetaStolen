@@ -1,14 +1,10 @@
 <script lang="ts">
-	import { cn } from "$lib/utils";
-
 	interface Props {
 		/** Total duration in seconds */
 		duration?: number;
 		/** End timestamp in milliseconds - set to start timer, clear to reset */
 		endTimestamp?: number | null;
-		/** Size of the timer in pixels */
-		size?: number;
-		/** Stroke width of the progress ring */
+		/** Stroke width of the progress ring (in viewBox units) */
 		strokeWidth?: number;
 		/** Called when timer reaches 0 */
 		onEnd?: () => void;
@@ -18,11 +14,12 @@
 		class?: string;
 	}
 
+	const viewBoxSize = 300;
+
 	let {
 		duration = 30,
 		endTimestamp = null,
-		size = 120,
-		strokeWidth = 8,
+		strokeWidth = 20,
 		onEnd,
 		onTick,
 		class: className
@@ -38,11 +35,11 @@
 		}
 	});
 
-	let radius = $derived(size / 2 - strokeWidth);
+	let radius = $derived(viewBoxSize / 2 - strokeWidth);
 	let circumference = $derived(2 * Math.PI * radius);
 	let progress = $derived(remaining / duration);
 	let dashOffset = $derived(circumference * (1 - progress));
-	let fontSize = $derived(Math.round(size * 0.2));
+	let fontSize = $derived(Math.round(viewBoxSize * 0.2));
 
 	function formatTime(seconds: number): string {
 		const mins = Math.floor(seconds / 60);
@@ -90,15 +87,17 @@
 	});
 </script>
 
-<div
-	class={cn("relative inline-flex items-center justify-center", className)}
-	style="width: {size}px; height: {size}px;"
->
-	<svg class="absolute -rotate-90" width={size} height={size}>
+<div class={["relative inline-flex items-center justify-center", className]}>
+	<svg
+		class="absolute -rotate-90"
+		width="100%"
+		height="100%"
+		viewBox="0 0 {viewBoxSize} {viewBoxSize}"
+	>
 		<!-- Background circle -->
 		<circle
-			cx={size / 2}
-			cy={size / 2}
+			cx={viewBoxSize / 2}
+			cy={viewBoxSize / 2}
 			r={radius}
 			fill="none"
 			class="stroke-muted"
@@ -106,8 +105,8 @@
 		/>
 		<!-- Progress circle -->
 		<circle
-			cx={size / 2}
-			cy={size / 2}
+			cx={viewBoxSize / 2}
+			cy={viewBoxSize / 2}
 			r={radius}
 			fill="none"
 			class="stroke-primary transition-[stroke-dashoffset] duration-100 ease-linear"
@@ -116,9 +115,17 @@
 			stroke-dasharray={circumference}
 			stroke-dashoffset={dashOffset}
 		/>
+		<!-- Time display (inside SVG so it scales with viewBox) -->
+		<!-- Counter-rotate 90deg around the center so text stays upright -->
+		<text
+			x={viewBoxSize / 2}
+			y={viewBoxSize / 2}
+			text-anchor="middle"
+			dominant-baseline="central"
+			transform="rotate(90, {viewBoxSize / 2}, {viewBoxSize / 2})"
+			class="fill-foreground font-bold tabular-nums"
+			font-size={fontSize}
+			style="font-family: inherit;">{formatTime(remaining)}</text
+		>
 	</svg>
-	<!-- Time display -->
-	<span class="font-bold tabular-nums" style="font-size: {fontSize}px;"
-		>{formatTime(remaining)}</span
-	>
 </div>
