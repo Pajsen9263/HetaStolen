@@ -10,7 +10,7 @@
 
 	const { data }: PageProps = $props();
 
-	let projectorState = $derived<ProjectorState>(data.projectorState);
+	let projectorState: ProjectorState = $derived(data.projectorState);
 
 	function applyTheme(theme: ProjectorState["theme"]) {
 		const html = document.documentElement;
