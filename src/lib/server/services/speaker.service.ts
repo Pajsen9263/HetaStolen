@@ -1,8 +1,4 @@
-import {
-	createSpeaker as dbCreateSpeaker,
-	deleteSpeakerById,
-	getSpeakerById
-} from "../db/queries.ts";
+import type { DatabaseService } from "./database.service.ts";
 
 export type Speaker = {
 	id: string;
@@ -21,19 +17,22 @@ export type SpeakerSubscriber = (event: SpeakerEvent) => void;
 export interface ISpeakerService {
 	createSpeaker(sessionId: string, name: string): Promise<boolean>;
 	deleteSpeaker(speakerId: string): Promise<boolean>;
+	getSpeakerById(speakerId: string): ReturnType<DatabaseService["getSpeakerById"]>;
 	subscribe(sessionId: string, callback: SpeakerSubscriber): () => void;
 }
 
 export class SpeakerService implements ISpeakerService {
+	#db: DatabaseService;
 	#subscribers: Map<string, Set<SpeakerSubscriber>>;
 
-	constructor() {
+	constructor(db: DatabaseService) {
+		this.#db = db;
 		this.#subscribers = new Map();
 	}
 
 	async createSpeaker(sessionId: string, name: string): Promise<boolean> {
 		try {
-			const id = await dbCreateSpeaker(sessionId, name);
+			const id = await this.#db.createSpeaker(sessionId, name);
 
 			if (!id) {
 				return false;
@@ -60,7 +59,7 @@ export class SpeakerService implements ISpeakerService {
 	async deleteSpeaker(speakerId: string): Promise<boolean> {
 		try {
 			// Fetch the speaker before deleting to get sessionId and full data
-			const speaker = await getSpeakerById(speakerId);
+			const speaker = await this.#db.getSpeakerById(speakerId);
 
 			if (!speaker || !speaker.sessionId) {
 				console.error("Speaker not found or missing sessionId:", speakerId);
@@ -68,7 +67,7 @@ export class SpeakerService implements ISpeakerService {
 			}
 
 			// Delete the speaker
-			const success = await deleteSpeakerById(speakerId);
+			const success = await this.#db.deleteSpeakerById(speakerId);
 
 			if (success) {
 				// Notify subscribers about the deletion
@@ -86,6 +85,10 @@ export class SpeakerService implements ISpeakerService {
 			console.error("Error in SpeakerService.deleteSpeaker:", error);
 			return false;
 		}
+	}
+
+	getSpeakerById(speakerId: string) {
+		return this.#db.getSpeakerById(speakerId);
 	}
 
 	subscribe(sessionId: string, callback: SpeakerSubscriber): () => void {

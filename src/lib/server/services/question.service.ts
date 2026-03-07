@@ -1,8 +1,4 @@
-import {
-	createQuestion as dbCreateQuestion,
-	deleteQuestionById,
-	getQuestionById
-} from "../db/queries.ts";
+import type { DatabaseService } from "./database.service.ts";
 
 export type Question = {
 	id: string;
@@ -22,13 +18,16 @@ export type QuestionSubscriber = (event: QuestionEvent) => void;
 export interface IQuestionService {
 	createQuestion(sessionId: string, content: string): Promise<boolean>;
 	deleteQuestion(questionId: string): Promise<boolean>;
+	getQuestionById(questionId: string): ReturnType<DatabaseService["getQuestionById"]>;
 	subscribe(sessionId: string, callback: QuestionSubscriber): () => void;
 }
 
 export class QuestionService implements IQuestionService {
+	#db: DatabaseService;
 	#subscribers: Map<string, Set<QuestionSubscriber>>;
 
-	constructor() {
+	constructor(db: DatabaseService) {
+		this.#db = db;
 		this.#subscribers = new Map();
 	}
 
@@ -36,7 +35,7 @@ export class QuestionService implements IQuestionService {
 		const createdAt = new Date();
 
 		try {
-			const id = await dbCreateQuestion(sessionId, content);
+			const id = await this.#db.createQuestion(sessionId, content);
 
 			if (!id) {
 				return false;
@@ -65,7 +64,7 @@ export class QuestionService implements IQuestionService {
 	async deleteQuestion(questionId: string): Promise<boolean> {
 		try {
 			// Fetch the question before deleting to get sessionId and full data
-			const question = await getQuestionById(questionId);
+			const question = await this.#db.getQuestionById(questionId);
 
 			if (!question || !question.sessionId) {
 				console.error("Question not found or missing sessionId:", questionId);
@@ -73,7 +72,7 @@ export class QuestionService implements IQuestionService {
 			}
 
 			// Delete the question
-			const success = await deleteQuestionById(questionId);
+			const success = await this.#db.deleteQuestionById(questionId);
 
 			if (success) {
 				// Notify subscribers about the deletion
@@ -92,6 +91,10 @@ export class QuestionService implements IQuestionService {
 			console.error("Error in QuestionService.deleteQuestion:", error);
 			return false;
 		}
+	}
+
+	getQuestionById(questionId: string) {
+		return this.#db.getQuestionById(questionId);
 	}
 
 	subscribe(sessionId: string, callback: QuestionSubscriber): () => void {

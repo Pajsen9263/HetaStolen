@@ -2,13 +2,11 @@ import { error, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
 import { joinSchema } from "$lib/schemas";
 import { parseForm } from "$lib/utils";
-import { getSessionByCode } from "$lib/server/db/queries";
-
 export const load: PageServerLoad = async ({ url, cookies, locals }) => {
 	const prefillCode = url.searchParams.get("code");
 
 	if (prefillCode) {
-		const session = await getSessionByCode(prefillCode);
+		const session = await locals.sessionService.getSessionByCode(prefillCode);
 
 		if (session) {
 			locals.crowdAuthService.join(session.id, cookies);
@@ -29,7 +27,7 @@ export const actions: Actions = {
 		}
 
 		const { code } = result.output;
-		const session = await getSessionByCode(code);
+		const session = await locals.sessionService.getSessionByCode(code);
 
 		if (!session) {
 			error(404, "Session not found. Check the code and try again.");

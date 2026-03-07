@@ -2,10 +2,8 @@ import { error, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
 import { createQuestionSchema } from "$lib/schemas";
 import { parseForm } from "$lib/utils";
-import { getSessionById } from "$lib/server/db/queries";
-
 export const load: PageServerLoad = async ({ params, locals, cookies }) => {
-	const session = await getSessionById(params.session);
+	const session = await locals.sessionService.getSessionById(params.session);
 
 	if (!session) {
 		throw error(404, "Session not found.");
@@ -31,7 +29,7 @@ export const actions: Actions = {
 	},
 
 	newQuestion: async ({ request, params, locals, cookies }) => {
-		const session = await getSessionById(params.session);
+		const session = await locals.sessionService.getSessionById(params.session);
 
 		if (!session) {
 			error(404, "Session not found.");

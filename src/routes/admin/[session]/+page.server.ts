@@ -1,4 +1,3 @@
-import { getSessionWithRelations, getSpeakerById, getQuestionById } from "$lib/server/db/queries";
 import type { PageServerLoad } from "./$types";
 import { error } from "@sveltejs/kit";
 import {
@@ -11,7 +10,7 @@ import {
 import { parseForm } from "$lib/utils";
 
 export const load: PageServerLoad = async ({ params, locals }) => {
-	const session = await getSessionWithRelations(params.session);
+	const session = await locals.sessionService.getSessionWithRelations(params.session);
 
 	const projectorState = locals.projectorService.getState(params.session);
 
@@ -97,8 +96,8 @@ export const actions = {
 		const { speakerId, questionId } = result.output;
 
 		const [speaker, question] = await Promise.all([
-			getSpeakerById(speakerId),
-			getQuestionById(questionId)
+			locals.speakerService.getSpeakerById(speakerId),
+			locals.questionService.getQuestionById(questionId)
 		]);
 
 		if (!speaker) {

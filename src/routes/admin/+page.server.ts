@@ -1,11 +1,10 @@
 import type { PageServerLoad } from "./$types";
 import * as v from "valibot";
-import { createSession, deleteSessionById, getAllSessionsWithCounts } from "$lib/server/db/queries";
 import { error } from "@sveltejs/kit";
 import { newSessionSchema, deleteSessionSchema } from "./schemas";
 
-export const load: PageServerLoad = async () => {
-	const sessions = await getAllSessionsWithCounts();
+export const load: PageServerLoad = async ({ locals }) => {
+	const sessions = await locals.sessionService.getAllSessionsWithCounts();
 
 	return {
 		sessions
@@ -13,7 +12,7 @@ export const load: PageServerLoad = async () => {
 };
 
 export const actions = {
-	newSession: async ({ request }) => {
+	newSession: async ({ request, locals }) => {
 		const formData = Object.fromEntries(await request.formData()) as v.InferInput<
 			typeof newSessionSchema
 		>;
@@ -26,9 +25,9 @@ export const actions = {
 
 		const name = result.output.name;
 
-		await createSession(name);
+		await locals.sessionService.createSession(name);
 	},
-	deleteSession: async ({ request }) => {
+	deleteSession: async ({ request, locals }) => {
 		const formData = Object.fromEntries(await request.formData()) as v.InferInput<
 			typeof deleteSessionSchema
 		>;
@@ -41,7 +40,7 @@ export const actions = {
 
 		const id = result.output.id;
 
-		const success = await deleteSessionById(id);
+		const success = await locals.sessionService.deleteSessionById(id);
 
 		if (!success) {
 			throw error(500, `Failed to delete session`);

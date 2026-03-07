@@ -3,6 +3,7 @@ import type { IQuestionService } from "$lib/server/services/question.service";
 import type { ISpeakerService } from "$lib/server/services/speaker.service";
 import type { IProjectorService } from "$lib/server/services/projector.service";
 import type { ICrowdAuthService } from "$lib/server/services/crowd-auth.service";
+import type { ISessionService } from "$lib/server/services/session.service";
 
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
@@ -16,6 +17,7 @@ declare global {
 			};
 			isAdmin: boolean;
 			adminAuthService: IAdminAuthService;
+			sessionService: ISessionService;
 			questionService: IQuestionService;
 			speakerService: ISpeakerService;
 			projectorService: IProjectorService;
