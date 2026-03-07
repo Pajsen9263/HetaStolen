@@ -46,7 +46,7 @@
 
 	const isRoundActive = $derived(projectorState.speakerName !== null);
 
-	const qrUrl = $derived(`${page.url.origin}/connect?code=${data.session.code}`);
+	const qrUrl = $derived(`${page.url.origin}/join?code=${data.session.code}`);
 </script>
 
 <main class="relative flex min-h-screen overflow-hidden bg-background">
