@@ -33,7 +33,6 @@ export class QuestionService implements IQuestionService {
 	}
 
 	async createQuestion(sessionId: string, content: string): Promise<boolean> {
-		const id = crypto.randomUUID();
 		const createdAt = new Date();
 
 		try {
