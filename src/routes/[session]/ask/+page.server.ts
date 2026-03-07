@@ -2,6 +2,7 @@ import { error, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
 import { createQuestionSchema } from "$lib/schemas";
 import { parseForm } from "$lib/utils";
+
 export const load: PageServerLoad = async ({ params, locals, cookies }) => {
 	const session = await locals.sessionService.getSessionById(params.session);
 
