@@ -1,18 +1,27 @@
+<script lang="ts" module>
+	export type BaseProps = {
+		max: number;
+		value?: string;
+		maxSizeExceeded?: boolean;
+	};
+</script>
+
 <script lang="ts">
 	import * as InputGroup from "@/ui/input-group";
-	import type { ComponentProps } from "svelte";
+	import type { ComponentProps, Snippet } from "svelte";
+
+	type Props = BaseProps & {
+		align?: ComponentProps<typeof InputGroup.Addon>["align"];
+		children: Snippet;
+	};
 
 	let {
 		max,
 		value = $bindable(""),
 		maxSizeExceeded = $bindable(false),
-		class: className,
-		...props
-	}: {
-		max: number;
-		value?: string;
-		maxSizeExceeded?: boolean;
-	} & Omit<ComponentProps<typeof InputGroup.Input>, "type" | "files"> = $props();
+		align,
+		children
+	}: Props = $props();
 
 	let valueLength = $derived(value.length);
 
@@ -22,14 +31,8 @@
 </script>
 
 <InputGroup.Root>
-	<InputGroup.Input
-		type="text"
-		{...props}
-		class={[maxSizeExceeded && "text-destructive", className]}
-		bind:value
-		required
-	/>
-	<InputGroup.Addon align="inline-end">
+	{@render children()}
+	<InputGroup.Addon {align}>
 		<span
 			class={[
 				"font-semibold",
