@@ -2,7 +2,7 @@
 	import { Button } from "@/ui/button";
 	import { enhance } from "$app/forms";
 	import { Label } from "@/ui/label";
-	import MaxSizeInput from "@/max-size-input.svelte";
+	import MaxSizeInput from "@/maxSize/Input.svelte";
 	import Input from "@/ui/input/input.svelte";
 
 	interface Props {
