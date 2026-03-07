@@ -9,13 +9,12 @@
 	import { useSSE } from "$lib/hooks/useSSE.svelte";
 	import CircleTimer from "$lib/components/CircleTimer.svelte";
 	import { enhance } from "$app/forms";
+	import * as Item from "@/ui/item";
 
 	const { data } = $props();
 
-	// svelte-ignore state_referenced_locally -- intentional: seed mutable state from static load data
-	let questions: Question[] = $state(data.session.questions);
-	// svelte-ignore state_referenced_locally
-	let speakers: Speaker[] = $state(data.session.speakers);
+	let questions: Question[] = $derived(data.session.questions);
+	let speakers: Speaker[] = $derived(data.session.speakers);
 
 	// Set up SSE with event handlers
 	useSSE(`/admin/${page.params.session}`, {
@@ -42,19 +41,19 @@
 		}
 	});
 
-	let selectedQuestionId = $state<string | null>(null);
-	let selectedSpeakerId = $state<string | null>(null);
-	let timerEndTimestamp = $state<number | null>(null);
-	let projectorTheme = $state<"light" | "dark" | "system">("system");
-	let qrVisible = $state<boolean>(true);
+	let selectedQuestionId: string | null = $state(null);
+	let selectedSpeakerId: string | null = $state(null);
+	let timerEndTimestamp: number | null = $derived(data.projector.timerEndTimestamp);
+	let projectorTheme: "light" | "dark" | "system" = $derived(data.projector.theme);
+	let qrVisible: boolean = $derived(data.projector.qrVisible);
 
 	// Derived values for selected entities
 	let selectedSpeaker = $derived(speakers.find((s) => s.id === selectedSpeakerId) ?? null);
 	let selectedQuestion = $derived(questions.find((q) => q.id === selectedQuestionId) ?? null);
 
 	// Track last selected for random exclusion
-	let lastRandomSpeakerId = $state<string | null>(null);
-	let lastRandomQuestionId = $state<string | null>(null);
+	let lastRandomSpeakerId: string | null = $state(null);
+	let lastRandomQuestionId: string | null = $state(null);
 
 	function selectRandomSpeaker() {
 		if (speakers.length === 0) return;
@@ -115,15 +114,37 @@
 <main
 	class="flex w-full flex-col justify-between gap-8 px-8 pt-3 md:h-[calc(100vh-4rem)] md:flex-row md:overflow-hidden"
 >
-	<div class="flex flex-1 flex-col gap-3 md:overflow-y-auto">
-		<h2 class="text-center text-2xl font-bold">Actions and Info</h2>
+	<div class="flex flex-1 flex-col gap-5 md:overflow-y-auto">
+		<!-- Session info -->
+		<Item.Root variant="muted">
+			<Item.Content>
+				<Item.Title class="text-xl">{data.session.name}</Item.Title>
+				<Item.Description>
+					<a href={`/${data.session.id}`} target="_blank" class="font-mono underline"
+						>{page.url.origin}/{data.session.id}</a
+					>
+				</Item.Description>
+			</Item.Content>
+			<Item.Actions>
+				<Button
+					variant="outline"
+					target="_blank"
+					href={`${page.url.origin}/join/?code=${data.session.code}`}>Join</Button
+				>
+				<Button
+					variant="outline"
+					onclick={() => navigator.clipboard.writeText(`${page.url.origin}/${data.session.id}`)}
+					>Copy Projector Link</Button
+				>
+			</Item.Actions>
+		</Item.Root>
 
 		<!-- Timer -->
 		<div class="flex justify-center py-4">
-			<CircleTimer endTimestamp={timerEndTimestamp} duration={30} />
+			<CircleTimer class="size-64" endTimestamp={timerEndTimestamp} duration={30} />
 		</div>
 
-		<Separator class="my-2" />
+		<Separator />
 
 		<!-- Speaker Selection -->
 		<div class="flex flex-col gap-2">
@@ -151,7 +172,7 @@
 			</div>
 		</div>
 
-		<Separator class="my-2" />
+		<Separator />
 
 		<!-- Question Selection -->
 		<div class="flex flex-col gap-2">
@@ -179,7 +200,7 @@
 			</div>
 		</div>
 
-		<Separator class="my-2" />
+		<Separator />
 
 		<!-- Round Controls -->
 		<div class="flex flex-col gap-2">
@@ -197,7 +218,7 @@
 			</form>
 		</div>
 
-		<Separator class="my-2" />
+		<Separator />
 
 		<!-- Projector Theme -->
 		<div class="flex flex-col gap-2">
@@ -219,7 +240,7 @@
 			</div>
 		</div>
 
-		<Separator class="my-2" />
+		<Separator />
 
 		<!-- QR Code Toggle -->
 		<div class="flex flex-col gap-2">
@@ -235,8 +256,6 @@
 
 	<!-- Speakers Section -->
 	<div class="flex flex-1 flex-col gap-3">
-		<h2 class="text-center text-2xl font-bold">Speakers</h2>
-
 		<EntityForm
 			action="?/newSpeaker"
 			label="Speaker Name"
@@ -265,8 +284,6 @@
 
 	<!-- Questions Section -->
 	<div class="flex flex-1 flex-col gap-3">
-		<h2 class="text-center text-2xl font-bold">Questions</h2>
-
 		<EntityForm
 			maxLength={128}
 			action="?/newQuestion"
@@ -295,6 +312,7 @@
 	</div>
 </main>
 
+<!-- Changing the scorllbar styling to make it a little more prettier in chrome browsers -->
 <style>
 	::-webkit-scrollbar {
 		width: 0.5rem;
