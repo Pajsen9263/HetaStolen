@@ -51,8 +51,12 @@ const preparedGetSpeakerById = db
 	.prepare();
 
 export async function getAllSessionsWithCounts() {
-	// Let's just hope this does not throw XD
-	return await preparedGetAllSessionsWithCounts.execute();
+	try {
+		return await preparedGetAllSessionsWithCounts.execute();
+	} catch (error) {
+		console.error("Error fecthing all sessions with counts:", error);
+		return null;
+	}
 }
 
 export async function getSessionById(sessionId: string) {
