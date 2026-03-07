@@ -3,10 +3,10 @@ import { env } from "$env/dynamic/private";
 import type { Cookies } from "@sveltejs/kit";
 import { generateSecretPassword, generateSessionToken } from "./utils/generate";
 
-const cookieKey = "adminToken";
+const COOKIE_KEY = "adminToken";
 
 function getTokenFromCookies(cookies: Cookies): string | null {
-	return cookies.get(cookieKey) || null;
+	return cookies.get(COOKIE_KEY) || null;
 }
 
 type Admin = {
@@ -44,7 +44,7 @@ export class AdminAuthService implements IAdminAuthService {
 		if (password === this.#secretPassword) {
 			const token = generateSessionToken();
 			this.#loggedInAdmin = { token, ip, userAgent };
-			cookies.set(cookieKey, token, {
+			cookies.set(COOKIE_KEY, token, {
 				httpOnly: true,
 				sameSite: "strict",
 				path: "/"
@@ -58,7 +58,7 @@ export class AdminAuthService implements IAdminAuthService {
 	logout(cookies: Cookies): boolean {
 		const token = getTokenFromCookies(cookies);
 
-		cookies.delete(cookieKey, { path: "/" });
+		cookies.delete(COOKIE_KEY, { path: "/" });
 
 		if (this.#loggedInAdmin && token && this.#loggedInAdmin.token === token) {
 			this.#loggedInAdmin = null;
