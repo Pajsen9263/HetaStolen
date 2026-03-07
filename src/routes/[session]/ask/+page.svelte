@@ -21,7 +21,7 @@
 		<div class="flex items-start justify-between gap-4">
 			<div class="flex flex-col gap-1">
 				<h1 class="text-2xl font-bold tracking-tight">{data.session.name}</h1>
-				<p class="text-sm text-muted-foreground">Submit a question for the speaker</p>
+				<p class="text-sm text-muted-foreground">Submit a question for the speakers</p>
 			</div>
 			<form
 				method="POST"
