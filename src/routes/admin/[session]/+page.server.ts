@@ -109,13 +109,7 @@ export const actions = {
 			throw error(404, "Question not found");
 		}
 
-		locals.projectorService.startRound(
-			params.session,
-			speaker.id,
-			speaker.name,
-			question.id,
-			question.content
-		);
+		locals.projectorService.startRound(params.session, speaker.name, question.content);
 	},
 	cancelRound: async ({ params, locals }) => {
 		locals.projectorService.cancelRound(params.session);

@@ -1,9 +1,7 @@
 export type ProjectorTheme = "light" | "dark" | "system";
 
 export type ProjectorState = {
-	speakerId: string | null;
 	speakerName: string | null;
-	questionId: string | null;
 	questionContent: string | null;
 	timerEndTimestamp: number | null;
 	theme: ProjectorTheme;
@@ -22,9 +20,7 @@ export type ProjectorSubscriber = (event: ProjectorEvent) => void;
 export interface IProjectorService {
 	startRound(
 		sessionId: string,
-		speakerId: string,
 		speakerName: string,
-		questionId: string,
 		questionContent: string,
 		durationSeconds?: number
 	): void;
@@ -57,9 +53,7 @@ export class ProjectorService implements IProjectorService {
 	#getOrInitState(sessionId: string): ProjectorState {
 		if (!this.#state.has(sessionId)) {
 			this.#state.set(sessionId, {
-				speakerId: null,
 				speakerName: null,
-				questionId: null,
 				questionContent: null,
 				timerEndTimestamp: null,
 				...DEFAULT_STATE
@@ -70,17 +64,13 @@ export class ProjectorService implements IProjectorService {
 
 	startRound(
 		sessionId: string,
-		speakerId: string,
 		speakerName: string,
-		questionId: string,
 		questionContent: string,
 		durationSeconds: number = DEFAULT_DURATION_SECONDS
 	): void {
 		const existing = this.#getOrInitState(sessionId);
 		const state: ProjectorState = {
-			speakerId,
 			speakerName,
-			questionId,
 			questionContent,
 			timerEndTimestamp: Date.now() + durationSeconds * 1000,
 			theme: existing.theme,
@@ -100,9 +90,7 @@ export class ProjectorService implements IProjectorService {
 
 		// Clear speaker/question and timer, preserve display settings
 		const state: ProjectorState = {
-			speakerId: null,
 			speakerName: null,
-			questionId: null,
 			questionContent: null,
 			timerEndTimestamp: null,
 			theme: existing.theme,
