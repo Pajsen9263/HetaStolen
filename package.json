@@ -13,6 +13,7 @@
 		"lint": "prettier --check .",
 		"format": "prettier --write .",
 		"drizzle:push": "drizzle-kit push",
+		"drizzle:generate": "drizzle-kit generate",
 		"drizzle:studio": "drizzle-kit studio",
 		"chadd": "bun x shadcn-svelte@latest add"
 	},
